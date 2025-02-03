@@ -1,32 +1,26 @@
-# Prerequisites
-*.d
+# Archivos y directorios generados por CLion
+.idea/
 
-# Compiled Object files
-*.slo
-*.lo
+# Directorios de compilación de CMake
+cmake-build-*/
+
+# Archivos generados por CMake
+CMakeCache.txt
+CMakeFiles/
+build.ninja
+.ninja_deps
+.ninja_log
+
+# Archivos binarios y ejecutables
+*.exe
+*.out
+*.app
 *.o
 *.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Archivos de registro y temporales
+*.log
+*.tmp
