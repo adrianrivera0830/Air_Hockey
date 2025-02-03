@@ -1,3 +1,7 @@
 # ninja log v6
 3	285	7603194088246799	CMakeFiles/Air_Hockey.dir/main.cpp.obj	d20b5cb2513f629
 287	351	7603194091086125	Air_Hockey.exe	b2cf7feaac78c202
+1	208	7603240184058176	build.ninja	4c11a9183cdf17b9
+2	610	7603240514740600	CMakeFiles/Air_Hockey.dir/main.cpp.obj	976268837f00be5e
+3	573	7603241101838796	CMakeFiles/Air_Hockey.dir/main.cpp.obj	976268837f00be5e
+573	638	7603241107527200	Air_Hockey.exe	3ecec2be8e59b776
