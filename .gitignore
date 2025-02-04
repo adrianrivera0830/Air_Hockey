@@ -3,6 +3,7 @@
 
 # Directorios de compilación de CMake
 cmake-build-*/
+.idea/vcs.xml
 
 # Archivos generados por CMake
 CMakeCache.txt
