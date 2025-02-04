@@ -10,9 +10,38 @@
 const int FPS = 144;
 const int FRAME_DELAY = 1000/FPS;
 
-const int BALL_RADIUS = 56;
+const int HANDLE_RADIUS = 56;
+const int BALL_RADIUS = 36;
+
+float deltaTime = 0.0f;
+
+
 SDL_Window* window;
 SDL_Renderer* renderer;
+
+class Ball {
+public:
+    void HitBall() {
+        velY = 500;
+    }
+    void UpdateVelocity() {
+        velX *= (1-friction);
+        velY *= (1-friction);
+
+    }
+    void UpdatePosition(float deltaTime) {
+        x += (velX * deltaTime);
+        y += (velY * deltaTime);
+    }
+
+    float friction = 0.008f;
+    float x = SCREEN_WIDTH/2;
+    float y = SCREEN_HEIGHT/2;
+    float velX = 0;
+    float velY = 0;
+private:
+
+};
 
 bool Initialize() {
     // Inicializar SDL
@@ -84,13 +113,7 @@ void CleanUp() {
 }
 
 
-int main(int argc, char* argv[]) {
-    if (!Initialize()) {
-        return 1;
-    }
-
-    //SDL_ShowCursor(SDL_DISABLE);
-
+void GameLoop() {
 
     SDL_Surface* ballSurface = IMG_Load("../images/ball.png");
     SDL_Texture* ballTexture = SDL_CreateTextureFromSurface(renderer,ballSurface);
@@ -103,52 +126,89 @@ int main(int argc, char* argv[]) {
 
     SDL_FreeSurface(ballSurface);
 
-
-    // Definir el rectángulo destino centrado en la ventana
-    SDL_Rect dstRect = {
+    SDL_Rect handleRect = {
         (400 ) / 2,
         (400) / 2,
+        HANDLE_RADIUS,
+        HANDLE_RADIUS
+    };
+
+    Ball* ball = new Ball();
+
+    SDL_Rect ballRect = {
+        static_cast<int>(ball->x),  // Usa `->` porque ball es un puntero
+        static_cast<int>(ball->y),
         BALL_RADIUS,
         BALL_RADIUS
     };
 
 
     int handlePosX,handlePosY;
+
+    Uint32 lastTime = SDL_GetTicks(); // Tiempo del último frame
+
     bool running = true;
 
     SDL_Event event;
     while (running) {
 
-        Uint32 frameStart = SDL_GetTicks(); // Tiempo inicial del frame
-
+        Uint32 currentTime = SDL_GetTicks();
+        deltaTime = (currentTime - lastTime) / 1000.0f; // Convertir a segundos
+        lastTime = currentTime;
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
             }
 
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_a) { // Si se presiona la tecla "A"
+                    ball->HitBall(); // Llamar a HitBall()
+                }
+            }
+
             SDL_GetMouseState(&handlePosX, &handlePosY);
 
             handlePosY = std::max(SCREEN_HEIGHT/2,handlePosY);
-            float newX = dstRect.x;
-            float newY = dstRect.y;
+            float newX = handleRect.x;
+            float newY = handleRect.y;
             LerpVector(newX, newY, static_cast<float>(handlePosX), static_cast<float>(handlePosY), 0.15f, newX, newY);
-            dstRect.x = static_cast<int>(newX);
-            dstRect.y = static_cast<int>(newY);
+            handleRect.x = static_cast<int>(newX);
+            handleRect.y = static_cast<int>(newY);
 
 
         }
+
+        ball->UpdateVelocity();  // Aplica la fricción a la velocidad
+        ball->UpdatePosition(deltaTime); // Actualiza la posición con la velocidad
+        ballRect.x = static_cast<int>(ball->x);
+        ballRect.y = static_cast<int>(ball->y);
+
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, handleTexure, NULL, &dstRect); // Renderizar la textura
+        SDL_RenderCopy(renderer, ballTexture, NULL, &ballRect); // Renderizar la textura
+        //SDL_RenderCopy(renderer, handleTexure, NULL, &handleRect); // Renderizar la textura
         SDL_RenderPresent(renderer);
 
-        Uint32 frameTime = SDL_GetTicks() - frameStart;
+        Uint32 frameTime = SDL_GetTicks() - currentTime;
 
         if (frameTime < FRAME_DELAY) {
             SDL_Delay(FRAME_DELAY - frameTime); // Esperar el tiempo restante
         }
     }
+}
+
+int main(int argc, char* argv[]) {
+    if (!Initialize()) {
+        return 1;
+    }
+
+    //SDL_ShowCursor(SDL_DISABLE);
+
+
+
+
+    GameLoop();
 
     CleanUp();
 
