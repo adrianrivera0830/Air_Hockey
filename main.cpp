@@ -117,14 +117,25 @@ public:
     }
 
     void OnDiskEdgeCollission() {
-        if (x + BALL_DIAMETER > SCREEN_WIDTH || x < 0) {
+        if (x + BALL_DIAMETER > SCREEN_WIDTH) {
             velX = -velX;
         }
+        else if (x < 0) {
+            x = 0;
+            velX = -velX;
 
-         if (y + BALL_DIAMETER > SCREEN_HEIGHT || y  < 0) {
+        }
+
+         if (y + BALL_DIAMETER > SCREEN_HEIGHT) {
+
              velY = -velY;
             //y = SCREEN_HEIGHT - (BALL_DIAMETER);
+        } else if (y  < 0) {
+            y = 0;
+            velY = -velY;
+
         }
+
 
     }
 
