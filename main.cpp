@@ -85,13 +85,13 @@ public:
     Disk(SDL_Renderer* m_renderer) {
         diskTexture = new TextureRenderer(m_renderer,"../images/ball.png");
         diskTexture->SetPosition(400,400);
-        diskTexture->SetSize(BALL_DIAMETER,BALL_DIAMETER);
+        diskTexture->SetSize(DISK_DIAMETER,DISK_DIAMETER);
     }
 
     void HitDisk(float radians) {
+
         float speed = sqrt(velX * velX + velY * velY);
 
-        // Calculamos la nueva velocidad en X e Y
         velX = speed * cos(radians);
         velY = speed * sin(radians);
     }
@@ -111,13 +111,15 @@ public:
         diskTexture->RenderTexture();
     }
 
-    void ApplyImpulse(float pusherMass,float pusherVelX,float pusherVelY) {
-        velX = ((mass - pusherMass) * velX + 2 * pusherMass * pusherVelX) / (mass + pusherMass);
-        velY = ((mass - pusherMass) * velY + 2 * pusherMass * pusherVelY) / (mass + pusherMass);
+    void ApplyImpulse(float pusherVelX,float pusherVelY) {
+        velX += pusherVelX;
+        velY += pusherVelY;
+
     }
 
     void OnDiskEdgeCollission() {
-        if (x + BALL_DIAMETER > SCREEN_WIDTH) {
+        if (x + DISK_DIAMETER > SCREEN_WIDTH) {
+            x = SCREEN_WIDTH - DISK_DIAMETER;
             velX = -velX;
         }
         else if (x < 0) {
@@ -126,8 +128,8 @@ public:
 
         }
 
-         if (y + BALL_DIAMETER > SCREEN_HEIGHT) {
-
+         if (y + DISK_DIAMETER > SCREEN_HEIGHT) {
+             y = SCREEN_HEIGHT - DISK_DIAMETER;
              velY = -velY;
             //y = SCREEN_HEIGHT - (BALL_DIAMETER);
         } else if (y  < 0) {
@@ -135,9 +137,20 @@ public:
             velY = -velY;
 
         }
-
-
     }
+
+#define RADIUS_OFFSET -25
+    void OnDiskMalletCollision(float radians,int radius) {
+        float degrees = radians * (180.0 / M_PI);
+
+
+
+        float dirX = (float)cos(radians) * (radius + RADIUS_OFFSET);
+        float dirY = (float)sin(radians) * (radius + RADIUS_OFFSET);
+        x += dirX;
+        y += dirY;
+    }
+
 
     TextureRenderer* GetTexture() {
         return diskTexture;
@@ -149,12 +162,11 @@ private:
     TextureRenderer* diskTexture;
 
     float friction = 0.003f;
-    const int BALL_DIAMETER = 36;
+    const int DISK_DIAMETER = 36;
     float x = SCREEN_WIDTH / 2;
     float y = SCREEN_HEIGHT / 2;
     float velX = 0;
     float velY = 0;
-    float mass = 0.02;
 };
 
 class Pusher {
@@ -166,16 +178,17 @@ public:
         pusher_texture->SetSize(PUSHER_DIAMETER,PUSHER_DIAMETER);
     }
 
+#define VELOCITY_MULTIPLIER 0.1;
     void UpdatePusherPosition(float deltaTime) {
         previusX = x;
         previusY = y;
         SDL_GetMouseState(&x, &y);
-        velX = (x - previusX)/deltaTime;
-        velY= (y - previusY)/deltaTime;
-        if (velX > 0) {
-            std::cout << velX << std::endl;
+        velX = ((x - previusX)/deltaTime) * VELOCITY_MULTIPLIER;
+        velY = ((y - previusY)/deltaTime) * VELOCITY_MULTIPLIER;
 
-        }
+
+
+
 
         //y = std::max(SCREEN_HEIGHT / 2, y);
         pusher_texture->SetPosition(x,y);
@@ -196,13 +209,9 @@ public:
         return pusher_texture;
     }
 
-    float GetMass() {return  mass;}
-    float GetVelX() {
-        return  velX;
-    }
-    float GetVelY() {
-        return velY;
-    }
+    float GetVelX() {return  velX;}
+    float GetVelY() {return velY;}
+    int GetDiameter() {return PUSHER_DIAMETER;}
 
 private:
     TextureRenderer* pusher_texture;
@@ -213,7 +222,7 @@ private:
     int previusY = 0;
     float velX = 0;
     float velY = 0;
-    float mass = 0.15;
+
 };
 
 bool Initialize() {
@@ -343,10 +352,6 @@ void GameLoop() {
             }
 
             if (event.type == SDL_KEYDOWN) {
-                // if (event.key.keysym.sym == SDLK_a) {
-                //     // Si se presiona la tecla "A"
-                //     ball->HitBall(); // Llamar a HitBall()
-                // }
             }
 
 
@@ -360,8 +365,9 @@ void GameLoop() {
         SDL_Rect diskRect = disk->GetTexture()->GetRect();
         bool collision = DetectCollision(pusherRect,diskRect);
         if (collision) {
+            disk->OnDiskMalletCollision(IncidenceAngle(diskRect,pusherRect),pusher->GetDiameter()/2);
             disk->HitDisk(IncidenceAngle(diskRect,pusherRect));
-            disk->ApplyImpulse(pusher->GetMass(),pusher->GetVelX(),pusher->GetVelY());
+            disk->ApplyImpulse(pusher->GetVelX(),pusher->GetVelY());
         }
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
@@ -383,7 +389,7 @@ int main(int argc, char *argv[]) {
     }
 
     SDL_ShowCursor(SDL_DISABLE);
-    //SDL_SetWindowGrab(window, SDL_TRUE);
+    SDL_SetWindowGrab(window, SDL_TRUE);
 
 
     GameLoop();
