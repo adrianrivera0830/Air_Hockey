@@ -8,7 +8,9 @@
 #include <cmath> // Para sqrt y pow
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 1000
-
+#define EDGE_MARGIN 30;
+#define GOALPOAST_START 320
+#define GOALPOAST_LENGTH 160
 const int FPS = 1000;
 const int FRAME_DELAY = 1000 / FPS;
 
@@ -118,28 +120,87 @@ public:
     }
 
     void OnDiskEdgeCollission() {
-        if (x + DISK_DIAMETER > SCREEN_WIDTH) {
-            x = SCREEN_WIDTH - DISK_DIAMETER;
-            velX = -velX;
-        }
-        else if (x < 0) {
-            x = 0;
-            velX = -velX;
 
-        }
+        // int margin = EDGE_MARGIN;
+        // int fullX = x + DISK_DIAMETER;
+        // int fullY = y + DISK_DIAMETER;
+        //
+        // if (x < margin) {
+        //     x = margin;
+        //     velX = -velX;
+        // }
+        //
+        // //Permitir colision en el lado izquierda de la porteria superior
+        // else if (x < GOALPOAST_START && fullX > GOALPOAST_START && y < margin) {
+        //     //std::cout << "(" << x << "," << y << ")" << std::endl;
+        //     x = GOALPOAST_START;
+        //     velX = -velX;
+        // }
+        // else if (x < GOALPOAST_START + GOALPOAST_LENGTH && fullX > GOALPOAST_START + GOALPOAST_LENGTH && y < margin) {
+        //     x = GOALPOAST_START + GOALPOAST_LENGTH -DISK_DIAMETER;
+        //     velX = -velX;
+        // }
+        // else if (fullX > SCREEN_WIDTH - margin) {
+        //     x = SCREEN_WIDTH - DISK_DIAMETER - margin;
+        //     velX = -velX;
+        // }
+        //
+        //
+        // //Permitir colision en el lado izquierda de la porteria inferior
+        //
+        // else if (x < GOALPOAST_START && fullX > GOALPOAST_START && fullY > SCREEN_HEIGHT - margin) {
+        //     x = GOALPOAST_START;
+        //     velX = -velX;
+        // }
+        //
+        // if (y < margin && fullX < GOALPOAST_START) {
+        //     y = margin;
+        //     velY = -velY;
+        // }
+        // else if (y < margin && x > GOALPOAST_START + GOALPOAST_LENGTH) {
+        //     y = margin;
+        //     velY = -velY;
+        // }
+        //
+        // else if (fullY > SCREEN_HEIGHT - margin) {
+        //     y = SCREEN_HEIGHT - DISK_DIAMETER - margin;
+        //
+        //     velY = -velY;
+        // }
+        // else if (y < margin && x > GOALPOAST_START + GOALPOAST_LENGTH) {
+        //     y = margin;
+        //     velY = -velY;
+        // }
+        // else if (x > GOALPOAST_START && y > SCREEN_HEIGHT - margin) {
+        //     x = GOALPOAST_START;
+        //     velX = -velX;
+        // }
 
-         if (y + DISK_DIAMETER > SCREEN_HEIGHT) {
-             y = SCREEN_HEIGHT - DISK_DIAMETER;
-             velY = -velY;
-            //y = SCREEN_HEIGHT - (BALL_DIAMETER);
-        } else if (y  < 0) {
-            y = 0;
-            velY = -velY;
+        // if (fullX > SCREEN_WIDTH - margin) {
+        //     x = SCREEN_WIDTH - DISK_DIAMETER - margin;
+        //     velX = -velX;
+        // }
+        // else if (x < 0 + margin) {
+        //     x = margin;
+        //     velX = -velX;
+        //
+        // }
+        //
+        // bool inGoalPost = (x > GOALPOAST_START && fullX < GOALPOAST_START + GOALPOAST_LENGTH);
+        //
+        //  if ((fullY > SCREEN_HEIGHT - margin) && !inGoalPost ) {
+        //      y = SCREEN_HEIGHT - DISK_DIAMETER - margin;
+        //      velY = -velY;
+        //     //y = SCREEN_HEIGHT - (BALL_DIAMETER);
+        // } else if (y  < margin && !inGoalPost) {
+        //     y = margin;
+        //     velY = -velY;
+        //
+        // }
 
-        }
     }
 
-#define RADIUS_OFFSET -25
+#define RADIUS_OFFSET -30
     void OnDiskMalletCollision(float radians,int radius) {
         float degrees = radians * (180.0 / M_PI);
 
@@ -178,14 +239,23 @@ public:
         pusher_texture->SetSize(PUSHER_DIAMETER,PUSHER_DIAMETER);
     }
 
-#define VELOCITY_MULTIPLIER 0.1;
+    void LerpVector(float x1, float y1, float x2, float y2, float alpha, int &outX, int &outY) {
+        outX = (1.0f - alpha) * x1 + alpha * x2;
+        outY = (1.0f - alpha) * y1 + alpha * y2;
+    }
+
+#define VELOCITY_MULTIPLIER 0.05;
     void UpdatePusherPosition(float deltaTime) {
         previusX = x;
         previusY = y;
+
         SDL_GetMouseState(&x, &y);
+
+        LerpVector(previusX,previusY,x,y,.15f,x,y);
+
+
         velX = ((x - previusX)/deltaTime) * VELOCITY_MULTIPLIER;
         velY = ((y - previusY)/deltaTime) * VELOCITY_MULTIPLIER;
-
 
 
 
@@ -194,11 +264,6 @@ public:
         pusher_texture->SetPosition(x,y);
         RenderPusher();
 
-        // float newX = pusher_texture.set
-        // float newY = handleRect.y;
-        // LerpVector(newX, newY, static_cast<float>(handlePosX), static_cast<float>(handlePosY), 0.15f, newX, newY);
-        // handleRect.x = static_cast<int>(newX);
-        // handleRect.y = static_cast<int>(newY);
     }
 
     void RenderPusher() {
@@ -215,11 +280,11 @@ public:
 
 private:
     TextureRenderer* pusher_texture;
-    const int PUSHER_DIAMETER = 56;
+    const int PUSHER_DIAMETER = 66;
     int x;
     int y;
-    int previusX = 0;
-    int previusY = 0;
+    float previusX = 0;
+    float previusY = 0;
     float velX = 0;
     float velY = 0;
 
@@ -275,16 +340,6 @@ bool Initialize() {
     return true;
 }
 
-void LerpVector(float x1, float y1, float x2, float y2, float alpha, float &outX, float &outY) {
-    outX = (1.0f - alpha) * x1 + alpha * x2;
-    outY = (1.0f - alpha) * y1 + alpha * y2;
-}
-
-void Lerp(float x, float target, float alpha, float &out) {
-    out = (1 - alpha) * x + alpha * target;
-}
-
-
 bool DetectCollision(SDL_Rect rect1, SDL_Rect rect2) {
 
     // Obtener los centros de los círculos
@@ -330,10 +385,11 @@ void CleanUp() {
 
 void GameLoop() {
 
-
     Disk *disk = new Disk(renderer);
     Pusher *pusher = new Pusher(renderer);
-
+    TextureRenderer* bg = new TextureRenderer(renderer,"../images/map.png");
+    bg->SetPosition(0,0);
+    bg->SetSize(SCREEN_WIDTH,SCREEN_HEIGHT);
     int handlePosX, handlePosY;
 
     Uint32 lastTime = SDL_GetTicks(); // Tiempo del último frame
@@ -371,6 +427,7 @@ void GameLoop() {
         }
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
+        bg->RenderTexture();
         disk->RenderDisk();
         pusher->RenderPusher();
         SDL_RenderPresent(renderer);
