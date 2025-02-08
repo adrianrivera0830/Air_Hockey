@@ -35,7 +35,7 @@ if (WIN32)
             NetworkHeaders.h)
 
     # Vincular bibliotecas necesarias
-    target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf)
+    target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf ws2_32)
 
 elseif (UNIX)
     message(STATUS "Compilando en Linux")

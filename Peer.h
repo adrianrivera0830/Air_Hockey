@@ -8,6 +8,7 @@
 
 class Peer {
 public:
+    Peer();
     bool Initialize();
     bool Bind();
     bool CloseSocket();

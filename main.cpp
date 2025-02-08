@@ -6,11 +6,13 @@
 #include <cassert>
 #include <vector>
 #include <cmath> // Para sqrt y pow
+#include "Peer.h"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 1000
 #define EDGE_MARGIN 30;
 #define GOALPOAST_START 320
 #define GOALPOAST_LENGTH 160
+
 const int FPS = 1000;
 const int FRAME_DELAY = 1000 / FPS;
 
@@ -447,6 +449,8 @@ int main(int argc, char *argv[]) {
 
     SDL_ShowCursor(SDL_DISABLE);
     SDL_SetWindowGrab(window, SDL_TRUE);
+
+    Peer peer;
 
 
     GameLoop();
