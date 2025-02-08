@@ -95,11 +95,20 @@ bool Peer::CloseSocket() {
 }
 
 int Peer::SendTo(char *buffer, int bufferLen, sockaddr *to, socklen_t toLen) {
-    return  0;
+    int bytes_sent = sendto(m_socket, buffer, bufferLen, 0, to, toLen);
+
+    return bytes_sent;
 }
 
 int Peer::ReceiveFrom(char *buffer, int bufferLen, sockaddr *from, socklen_t *fromLen) {
-    return 0;
+    int bytes_received = recvfrom(m_socket,  buffer, bufferLen, 0, from, fromLen);
+
+
+    if (bytes_received > 0 && bytes_received < bufferLen) {
+        buffer[bytes_received] = '\0';
+    }
+
+    return bytes_received;
 }
 
 Peer::~Peer() {

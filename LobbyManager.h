@@ -4,14 +4,14 @@
 
 #ifndef LOBBYMANAGER_H
 #define LOBBYMANAGER_H
-
+#include "Peer.h"
 
 
 class LobbyManager {
-private:
+public:
   void Host();
   void Join();
-public:
+private:
 
 };
 
