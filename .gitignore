@@ -25,3 +25,5 @@ build.ninja
 # Archivos de registro y temporales
 *.log
 *.tmp
+
+*.xml
