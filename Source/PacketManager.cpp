@@ -2,9 +2,21 @@
 
 #include "../Headers/PacketManager.h"
 #include <iostream>
-#include <bitset>  // Para imprimir en binario
 
-PacketID GetPacketType(int id) {
+// PacketID GetPacketType(int id) {
+//     switch (id) {
+//         case 1: return PacketID::CONNECT;
+//         case 2: return PacketID::ACK;
+//         case 3: return PacketID::PING;
+//         case 4: return PacketID::DISCONNECT;
+//         case 5: return PacketID::START;
+//         default:
+//             std::cerr << " Error: ID de paquete inválido (" << id << ").\n";
+//             return PacketID::DISCONNECT; // Devuelve un valor seguro por defecto
+//     }
+// }
+
+PacketID GetType(int id) {
     switch (id) {
         case 1: return PacketID::CONNECT;
         case 2: return PacketID::ACK;
@@ -12,10 +24,22 @@ PacketID GetPacketType(int id) {
         case 4: return PacketID::DISCONNECT;
         case 5: return PacketID::START;
         default:
-            std::cerr << " Error: ID de paquete inválido (" << id << ").\n";
             return PacketID::DISCONNECT; // Devuelve un valor seguro por defecto
     }
 }
+
+int PacketTypeToInt(PacketID type) {
+    switch (type) {
+        case PacketID::CONNECT: return 1;
+        case PacketID::ACK: return 2;
+        case PacketID::PING: return 3;
+        case PacketID::DISCONNECT: return 4;
+        case PacketID::START: return 5;
+        default:
+            return -1; // Valor inválido
+    }
+}
+
 
 void WriteInt(Buffer &buffer, uint32_t data) {
     if (buffer.index + 4 > buffer.m_size) {

@@ -25,15 +25,17 @@ void LobbyManager::Host() {
     while (true) {
         int bytesReceived = peer.ReceiveFrom((char *)buffer.m_buffer, 1024, (sockaddr *) &from, &len);
         if (bytesReceived > 0) {
-            break;
+            PacketHeader header;
+            header.ReadFromBufferToStruct(buffer);
+
+            if (GetType(header.packet_id) == PacketID::CONNECT) {
+                break;
+            }
         }
     }
 
-    //GetPacketID(buffer);
+std::cout << "yupi";
 
-    PacketHeader header;
-
-    header.ReadFromBufferToStruct(buffer);
 
     while (true) {
 
@@ -79,7 +81,7 @@ void LobbyManager::Join() {
     }
     socklen_t len = sizeof(peerAddr);
 
-    PacketHeader header = GetPacketHeader(10,2,3,4,5,1);
+    PacketHeader header = GetPacketHeader(PacketTypeToInt(PacketID::ACK),2,3,4,5,1);
     Buffer buffer(1024);
 
     header.WriteFromStructToBuffer(buffer);

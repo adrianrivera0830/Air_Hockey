@@ -17,8 +17,10 @@ enum class PacketID {
     START = 5
 };
 
-PacketID GetPacketType(int id);
 
+PacketID GetType(int id);
+
+int PacketTypeToInt(PacketID tpye);
 struct Buffer {
     uint8_t *m_buffer;
     int index;
@@ -73,7 +75,6 @@ PacketHeader GetPacketHeader(
     uint32_t ack_bitfield,
     uint16_t payload_size);
 
-int GetPacketID(Buffer& buffer);
 
 struct PacketStart {
     void WriteFromStructToBuffer();

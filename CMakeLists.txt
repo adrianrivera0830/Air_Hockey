@@ -33,8 +33,6 @@ if (WIN32)
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h
-            Source/NetworkManager.cpp
-            Headers/NetworkManager.h
             Source/PacketManager.cpp
             Headers/PacketManager.h
             Source/TextureRenderer.cpp
@@ -63,8 +61,6 @@ elseif (UNIX)
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h
-            Source/NetworkManager.cpp
-            Headers/NetworkManager.h
             Source/PacketManager.cpp
             Headers/PacketManager.h
             Source/TextureRenderer.cpp

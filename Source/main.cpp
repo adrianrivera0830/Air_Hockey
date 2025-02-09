@@ -2,14 +2,12 @@
 #include <iostream>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <algorithm> // Para std::min y std::max
-#include <cassert>
-#include <vector>
-#include <cmath> // Para sqrt y pow
+
 #include "../Headers/LobbyManager.h"
 #include "../Headers/TextureRenderer.h"
 #include "../Headers/Disk.h"
 #include "../Headers/Pusher.h"
+
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 1000
 #define EDGE_MARGIN 30;
@@ -122,6 +120,7 @@ void CleanUp() {
 
 
 void GameLoop() {
+
     Disk *disk = new Disk(renderer);
     Pusher *pusher = new Pusher(renderer);
     TextureRenderer *bg = new TextureRenderer(renderer, "../images/map.png");
@@ -175,13 +174,14 @@ void GameLoop() {
 }
 
 
-LobbyManager lobby_manager;
 void ShowMenu() {
+
     std::cout << "INGRESA LA OPCION:\n";
     std::cout << "Host(1)\n";
     std::cout << "Join(2)\n";
     int opcion;
     std::cin >> opcion;
+    LobbyManager lobby_manager;
 
     if (opcion == 1) {
 lobby_manager.Host();
