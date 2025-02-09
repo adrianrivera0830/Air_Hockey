@@ -14,6 +14,7 @@ public:
     bool CloseSocket();
     int SendTo(char *buffer, int bufferLen, sockaddr *to, socklen_t toLen);
     int ReceiveFrom(char *buffer, int bufferLen, sockaddr *from, socklen_t *fromLen);
+    bool IsSocketValid();
     ~Peer();
 
 private:

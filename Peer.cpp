@@ -111,6 +111,10 @@ int Peer::ReceiveFrom(char *buffer, int bufferLen, sockaddr *from, socklen_t *fr
     return bytes_received;
 }
 
+bool Peer::IsSocketValid() {
+    return ISVALIDSOCKET(m_socket);
+}
+
 Peer::~Peer() {
     CLOSESOCKET(m_socket);
 #ifdef _WIN32

@@ -32,7 +32,9 @@ if (WIN32)
             LobbyManager.h
             Peer.cpp
             Peer.h
-            NetworkHeaders.h)
+            NetworkHeaders.h
+            NetworkManager.cpp
+            NetworkManager.h)
 
     # Vincular bibliotecas necesarias
     target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf ws2_32)
@@ -52,7 +54,9 @@ elseif (UNIX)
             LobbyManager.h
             Peer.cpp
             Peer.h
-            NetworkHeaders.h)
+            NetworkHeaders.h
+            NetworkManager.cpp
+            NetworkManager.h)
 
     target_link_libraries(Air_Hockey ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
 endif()

@@ -6,7 +6,7 @@
 #include <cassert>
 #include <vector>
 #include <cmath> // Para sqrt y pow
-#include "LobbyManager.h";
+#include "LobbyManager.h"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 1000
 #define EDGE_MARGIN 30;
@@ -442,6 +442,7 @@ lobby_manager.Join();
 }
 
 int main(int argc, char *argv[]) {
+
     ShowMenu();
     if (!Initialize()) {
         return 1;
