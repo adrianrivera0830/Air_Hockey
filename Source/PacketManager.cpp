@@ -1,7 +1,21 @@
 // Created by Cuent on 2/8/2025.
 
-#include "PacketManager.h"
+#include "../Headers/PacketManager.h"
 #include <iostream>
+#include <bitset>  // Para imprimir en binario
+
+PacketID GetPacketType(int id) {
+    switch (id) {
+        case 1: return PacketID::CONNECT;
+        case 2: return PacketID::ACK;
+        case 3: return PacketID::PING;
+        case 4: return PacketID::DISCONNECT;
+        case 5: return PacketID::START;
+        default:
+            std::cerr << " Error: ID de paquete inválido (" << id << ").\n";
+            return PacketID::DISCONNECT; // Devuelve un valor seguro por defecto
+    }
+}
 
 void WriteInt(Buffer &buffer, uint32_t data) {
     if (buffer.index + 4 > buffer.m_size) {
@@ -149,8 +163,19 @@ void PacketHeader::ReadFromBufferToStruct(Buffer& buffer) {
     ReadInt(buffer, payload_size);
 }
 
+void PacketHeader::Print() {
+    std::cout << "PacketHeader:" << std::endl;
+    std::cout << "  packet_id: " << packet_id << std::endl;
+    std::cout << "  packet_sequence: " << packet_sequence << std::endl;
+    std::cout << "  checksum: " << checksum << std::endl;
+    std::cout << "  timestamp: " << timestamp << std::endl;
+    std::cout << "  ack_bitfield: " << ack_bitfield << std::endl;
+    std::cout << "  payload_size: " << payload_size << std::endl;
+}
+
+
 PacketHeader GetPacketHeader(
-    uint16_t packet_id,
+    uint8_t packet_id,
     uint16_t packet_sequence,
     uint16_t checksum,
     uint16_t timestamp,

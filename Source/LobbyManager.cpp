@@ -1,15 +1,13 @@
 // Created by Cuent on 2/7/2025.
 //
 
-#include "LobbyManager.h"
+#include "../Headers/LobbyManager.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "NetworkManager.h"
-#include "Peer.h"
+#include "../Headers/Peer.h"
 #include <cstdlib> // Para exit()
-#include "PacketManager.h"
-#include <bitset>
+#include "../Headers/PacketManager.h"
 
 void LobbyManager::Host() {
 
@@ -31,11 +29,11 @@ void LobbyManager::Host() {
         }
     }
 
+    //GetPacketID(buffer);
+
     PacketHeader header;
 
     header.ReadFromBufferToStruct(buffer);
-
-    std::cout << header.packet_id;
 
     while (true) {
 
@@ -81,16 +79,13 @@ void LobbyManager::Join() {
     }
     socklen_t len = sizeof(peerAddr);
 
-    PacketHeader header = GetPacketHeader(10,10,10,10,10,10);
+    PacketHeader header = GetPacketHeader(10,2,3,4,5,1);
     Buffer buffer(1024);
 
     header.WriteFromStructToBuffer(buffer);
 
-    for (int i = 0; i < 2; i++) {
-        std::cout << std::bitset<8>(static_cast<unsigned char>(buffer.m_buffer[i])) << " ";
-    }
+
     int bytes_sent = peer.SendTo((char *) buffer.m_buffer, buffer.m_size, (sockaddr *) &peerAddr, len);
-std::cout << bytes_sent;
     while (true) {
 
 }

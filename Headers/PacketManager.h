@@ -17,6 +17,8 @@ enum class PacketID {
     START = 5
 };
 
+PacketID GetPacketType(int id);
+
 struct Buffer {
     uint8_t *m_buffer;
     int index;
@@ -36,27 +38,17 @@ struct Buffer {
 };
 
 void WriteInt(Buffer& buffer, uint32_t data);
-
 void WriteInt(Buffer& buffer, uint16_t data);
-
 void WriteInt(Buffer& buffer, uint8_t data);
-
 void WriteInt(Buffer& buffer, int32_t data);
-
 void WriteInt(Buffer& buffer, int16_t data);
-
 void WriteInt(Buffer& buffer, int8_t data);
 
 void ReadInt(Buffer& buffer, uint32_t& out);
-
 void ReadInt(Buffer& buffer, uint16_t& out);
-
 void ReadInt(Buffer& buffer, uint8_t& out);
-
 void ReadInt(Buffer& buffer, int32_t& out);
-
 void ReadInt(Buffer& buffer, int16_t& out);
-
 void ReadInt(Buffer& buffer, int8_t& out);
 
 struct PacketHeader {
@@ -69,14 +61,20 @@ struct PacketHeader {
 
     void WriteFromStructToBuffer(Buffer &buffer);
     void ReadFromBufferToStruct(Buffer &buffer);
+
+    void Print();
 };
+
 PacketHeader GetPacketHeader(
-    uint16_t packet_id,
+    uint8_t packet_id,
     uint16_t packet_sequence,
     uint16_t checksum,
     uint16_t timestamp,
     uint32_t ack_bitfield,
     uint16_t payload_size);
+
+int GetPacketID(Buffer& buffer);
+
 struct PacketStart {
     void WriteFromStructToBuffer();
     void ReadFromBufferToStruct();
