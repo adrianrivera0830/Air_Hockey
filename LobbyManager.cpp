@@ -1,4 +1,3 @@
-//
 // Created by Cuent on 2/7/2025.
 //
 
@@ -8,9 +7,15 @@
 #include <vector>
 #include "NetworkManager.h"
 #include "Peer.h"
+#include <cstdlib> // Para exit()
+#include "PacketManager.h"
+#include <bitset>
 
 void LobbyManager::Host() {
+
     Peer peer;
+
+
     //SetPlayer(peer);
 
     std::cout << "HOSTING\n";
@@ -18,38 +23,44 @@ void LobbyManager::Host() {
 
     sockaddr_in from;
     socklen_t len = sizeof(from);
-    char buffer[1024];
+    Buffer buffer(1024);
     while (true) {
-        int bytesReceived = peer.ReceiveFrom(buffer, 1024, (sockaddr *) &from, &len);
+        int bytesReceived = peer.ReceiveFrom((char *)buffer.m_buffer, 1024, (sockaddr *) &from, &len);
         if (bytesReceived > 0) {
             break;
         }
     }
-    std::cout << "Se recibio un mensaje!\n";
 
-    char *bufferToSend = "hola papus";
+    PacketHeader header;
 
-    // Enviar mensaje al primer cliente recibido
-    int sendResult = peer.SendTo(bufferToSend, strlen(bufferToSend), (sockaddr *) &from, len);
-    if (sendResult == -1) {
-        perror("Error en sendto");
-    }
+    header.ReadFromBufferToStruct(buffer);
+
+    std::cout << header.packet_id;
 
     while (true) {
-        int confirmBytes = peer.ReceiveFrom(buffer, 1024, (sockaddr *) &from, &len);
-        if (confirmBytes > 0) {
-            std::cout << "Confirmación recibida: " << buffer << "\n";
-            break;
-        }
+
     }
 
-    std::cout << "Conexión establecida correctamente!\n";
-
-
+    // int sendResult = peer.SendTo((char *)buffer.m_buffer,buffer.m_size, (sockaddr *) &from, len);
+    //
+    // char *bufferToSend = "hola papus";
+    //
+    // // Enviar mensaje al primer cliente recibido
+    // int sendResult = peer.SendTo(bufferToSend, strlen(bufferToSend), (sockaddr *) &from, len);
+    //
+    // while (true) {
+    //     int confirmBytes = peer.ReceiveFrom(buffer, 1024, (sockaddr *) &from, &len);
+    //     if (confirmBytes > 0) {
+    //         std::cout << "Confirmacion recibida: " << buffer << "\n";
+    //         break;
+    //     }
+    // }
+    //
+    // std::cout << "Conexion establecida correctamente!\n";
 }
 
 void LobbyManager::Join() {
-    std::cout << "Ingresa la dirección IP: ";
+    std::cout << "Ingresa la direccion IP: ";
     std::string ip;
     std::cin >> ip;
 
@@ -59,43 +70,50 @@ void LobbyManager::Join() {
 
     Peer peer;
 
-    char buffer[] = "hola papus";
+
     sockaddr_in peerAddr;
     peerAddr.sin_port = htons(puerto);
     peerAddr.sin_family = AF_INET;
 
     if (inet_pton(AF_INET, ip.c_str(), &peerAddr.sin_addr) <= 0) {
-        std::cerr << "Error: Dirección IP inválida\n";
-        return;
+        std::cerr << "Error: Direccion IP invalida\n";
+        exit(EXIT_FAILURE); // Termina el programa con un codigo de error
     }
     socklen_t len = sizeof(peerAddr);
 
-    // Enviar primer mensaje al host
-    int bytes_sent = peer.SendTo(buffer, strlen(buffer), (sockaddr *) &peerAddr, len);
-    if (bytes_sent == -1) {
-        perror("Error en sendto");
+    PacketHeader header = GetPacketHeader(10,10,10,10,10,10);
+    Buffer buffer(1024);
+
+    header.WriteFromStructToBuffer(buffer);
+
+    for (int i = 0; i < 2; i++) {
+        std::cout << std::bitset<8>(static_cast<unsigned char>(buffer.m_buffer[i])) << " ";
     }
-
-    sockaddr_in from;
-    socklen_t fromLen = sizeof(from);
-    char bufferFrom[1024];
-
-    // Esperar respuesta del host
+    int bytes_sent = peer.SendTo((char *) buffer.m_buffer, buffer.m_size, (sockaddr *) &peerAddr, len);
+std::cout << bytes_sent;
     while (true) {
-        int bytesReceived = peer.ReceiveFrom(bufferFrom, 1024, (sockaddr *) &from, &fromLen);
-        if (bytesReceived > 0) {
-            bufferFrom[bytesReceived] = '\0'; // Asegurar terminación de string
-            std::cout << "Mensaje recibido del host: " << bufferFrom << "\n";
-            break;
-        }
-    }
 
-    // Enviar confirmación de conexión al host
-    char confirmMessage[] = "confirmado";
-    int confirmSent = peer.SendTo(confirmMessage, strlen(confirmMessage), (sockaddr *) &from, fromLen);
-    if (confirmSent == -1) {
-        perror("Error en sendto (confirmación)");
-    }
-
-    std::cout << "Conexión establecida con éxito!\n";
+}
+    // // Enviar primer mensaje al host
+    // int bytes_sent = peer.SendTo(buffer, strlen(buffer), (sockaddr *) &peerAddr, len);
+    //
+    // sockaddr_in from;
+    // socklen_t fromLen = sizeof(from);
+    // char bufferFrom[1024];
+    //
+    // // Esperar respuesta del host
+    // while (true) {
+    //     int bytesReceived = peer.ReceiveFrom(bufferFrom, 1024, (sockaddr *) &from, &fromLen);
+    //     if (bytesReceived > 0) {
+    //         bufferFrom[bytesReceived] = '\0'; // Asegurar terminacion de string
+    //         std::cout << "Mensaje recibido del host: " << bufferFrom << "\n";
+    //         break;
+    //     }
+    // }
+    //
+    // // Enviar confirmacion de conexion al host
+    // char confirmMessage[] = "confirmado";
+    // int confirmSent = peer.SendTo(confirmMessage, strlen(confirmMessage), (sockaddr *) &from, fromLen);
+    //
+    // std::cout << "Conexion establecida con exito!\n";
 }

@@ -5,8 +5,12 @@
 #include "Peer.h"
 
 Peer::Peer() {
-    if (!Initialize()) return;
-    Bind();
+    if (!Initialize()) {
+        exit(EXIT_FAILURE); // Termina el programa con un codigo de error
+    }
+    if (!Bind()) {
+        exit(EXIT_FAILURE); // Termina el programa con un codigo de error
+    }
 }
 
 bool Peer::Initialize() {
@@ -17,31 +21,35 @@ bool Peer::Initialize() {
         return false;
     }
 #endif
-    m_socket = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
 
+    m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (!ISVALIDSOCKET(m_socket)) {
         std::cerr << "Error al crear el socket: " << GETSOCKETERRNO() << std::endl;
+#ifdef _WIN32
+        WSACleanup();
+#endif
         return false;
     }
 
     if (!setSocketNonBlocking(m_socket)) {
         std::cerr << "Error al setear el socket a no bloqueante: " << GETSOCKETERRNO() << std::endl;
+        CloseSocket();
         return false;
     }
 
     return true;
 }
-
 bool Peer::Bind() {
     if (!ISVALIDSOCKET(m_socket)) return false;
 
-    sockaddr_in addr;
+    sockaddr_in addr{};
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(0); // Puerto aleatorio
 
     if (bind(m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == SOCKET_ERROR) {
         std::cerr << "Error al bindear el socket: " << GETSOCKETERRNO() << std::endl;
+        CloseSocket();
         return false;
     }
 
@@ -88,28 +96,57 @@ bool Peer::Bind() {
 
     freeaddrinfo(addrList); // Liberar memoria de `getaddrinfo`
     return true;
+
+    return true;
 }
 
+
 bool Peer::CloseSocket() {
-    return true;
+return  CLOSESOCKET(m_socket);
 }
 
 int Peer::SendTo(char *buffer, int bufferLen, sockaddr *to, socklen_t toLen) {
     int bytes_sent = sendto(m_socket, buffer, bufferLen, 0, to, toLen);
 
+    if (bytes_sent == SOCKET_ERROR) {
+        int error = GETSOCKETERRNO();
+        std::cerr << "Error en sendto(): " << error << std::endl;
+        return -1; // Indica error
+    }
+
     return bytes_sent;
 }
 
+
 int Peer::ReceiveFrom(char *buffer, int bufferLen, sockaddr *from, socklen_t *fromLen) {
-    int bytes_received = recvfrom(m_socket,  buffer, bufferLen, 0, from, fromLen);
+    int bytes_received = recvfrom(m_socket, buffer, bufferLen, 0, from, fromLen);
 
+    if (bytes_received == SOCKET_ERROR) {
+        int error = GETSOCKETERRNO();
 
+        if (error == WOULD_BLOCK) {
+            // No hay datos disponibles en un socket no bloqueante, no es un error crítico
+
+            return -2; // Indica que no hay datos disponibles (pero sigue conectado)
+        }
+
+        std::cerr << "Error en recvfrom(): " << error << std::endl;
+        return -1; // Indica error general
+    }
+
+    if (bytes_received == 0) {
+        std::cerr << "El socket remoto se ha cerrado\n";
+        return 0; // Indica cierre de conexión
+    }
+
+    // Asegurar que la cadena terminada en null no sobrescriba datos válidos
     if (bytes_received > 0 && bytes_received < bufferLen) {
         buffer[bytes_received] = '\0';
     }
 
     return bytes_received;
 }
+
 
 bool Peer::IsSocketValid() {
     return ISVALIDSOCKET(m_socket);

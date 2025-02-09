@@ -1,18 +1,18 @@
-//
 // Created by Cuent on 1/30/2025.
 //
 
 #ifndef NETWORKHEADERS_H
 #define NETWORKHEADERS_H
 
-#if defined(_WIN32)
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600
-#endif
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#pragma comment(lib, "ws2_32.lib")
-#else
+// Detectar plataforma y definir configuraciones específicas
+#if defined(_WIN32)  // Windows
+    #ifndef _WIN32_WINNT
+        #define _WIN32_WINNT 0x0600  // Windows Vista o superior
+    #endif
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+    #pragma comment(lib, "ws2_32.lib")  // Enlazar la librería Winsock automáticamente
+#else  // Linux / MacOS (Unix-like)
     #include <sys/types.h>
     #include <sys/socket.h>
     #include <netinet/in.h>
@@ -26,20 +26,45 @@
 #include <iostream>
 #include <cstring>
 
+// Definir macros multiplataforma para manejo de sockets
 #if defined(_WIN32)
-#define ISVALIDSOCKET(s) ((s) != INVALID_SOCKET)
-#define CLOSESOCKET(s) closesocket(s)
-#define GETSOCKETERRNO() (WSAGetLastError())
-typedef int socklen_t;
-#define WOULD_BLOCK WSAEWOULDBLOCK
+    #define ISVALIDSOCKET(s) ((s) != INVALID_SOCKET)
+    #define CLOSESOCKET(s) closesocket(s)
+    #define GETSOCKETERRNO() (WSAGetLastError())
+    typedef int socklen_t;  // Windows usa `int` en lugar de `socklen_t`
+    #define WOULD_BLOCK WSAEWOULDBLOCK
+    #define SLEEP(ms) Sleep(ms)  // Windows usa Sleep(ms)
 #else
-#define ISVALIDSOCKET(s) ((s) >= 0)
-#define CLOSESOCKET(s) close(s)
-#define SOCKET int
-#define GETSOCKETERRNO() (errno)
-#define SOCKET_ERROR -1
-#define WOULD_BLOCK EWOULDBLOCK
+    #define ISVALIDSOCKET(s) ((s) >= 0)
+    #define CLOSESOCKET(s) close(s)
+    #define SOCKET int
+    #define GETSOCKETERRNO() (errno)
+    #define SOCKET_ERROR -1
+    #define WOULD_BLOCK EWOULDBLOCK
+    #define SLEEP(ms) usleep((ms) * 1000)  // Linux usa usleep(microsegundos)
 #endif
+
+/**
+ * @brief Inicializa Winsock en Windows (no hace nada en Linux).
+ * @return `true` si la inicialización fue exitosa o innecesaria, `false` en caso de error.
+ */
+inline bool initializeSockets() {
+#if defined(_WIN32)
+    WSADATA wsaData;
+    return WSAStartup(MAKEWORD(2, 2), &wsaData) == 0;
+#else
+    return true;  // En Linux no se necesita inicialización
+#endif
+}
+
+/**
+ * @brief Finaliza Winsock en Windows (no hace nada en Linux).
+ */
+inline void cleanupSockets() {
+#if defined(_WIN32)
+    WSACleanup();
+#endif
+}
 
 /**
  * @brief Configura un socket en modo no bloqueante.
