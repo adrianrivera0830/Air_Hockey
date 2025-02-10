@@ -46,3 +46,11 @@ float Pusher::GetVelX() { return velX; }
 float Pusher::GetVelY() { return velY; }
 
 int Pusher::GetDiameter() { return PUSHER_DIAMETER; }
+
+int Pusher::GetX() {
+    return  x;
+}
+
+int Pusher::GetY() {
+    return  y;
+}

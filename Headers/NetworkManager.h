@@ -4,6 +4,7 @@
 
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
+#include "Game.h"
 #include "Peer.h"
 
 
@@ -14,6 +15,7 @@ public:
     void CommunicationLoop();
 
 private:
+    Game* game = nullptr;
     sockaddr_in rival;
     Peer m_peer;
 };

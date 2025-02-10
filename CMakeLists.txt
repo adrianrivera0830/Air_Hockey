@@ -40,7 +40,9 @@ if (WIN32)
             Source/Pusher.cpp
             Headers/Pusher.h
             Source/NetworkManager.cpp
-            Headers/NetworkManager.h)
+            Headers/NetworkManager.h
+            Source/Game.cpp
+            Headers/Game.h)
 
     # Vincular bibliotecas necesarias
     target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf ws2_32)
@@ -69,6 +71,8 @@ elseif (UNIX)
             Headers/Pusher.h
             Source/NetworkManager.cpp
             Headers/NetworkManager.h
+            Source/Game.cpp
+            Headers/Game.h
     )
 
     target_link_libraries(Air_Hockey ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})

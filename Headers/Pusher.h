@@ -28,6 +28,10 @@ public:
 
     int GetDiameter();
 
+    int GetX();
+    int GetY();
+
+
 private:
     TextureRenderer *pusher_texture;
     const int PUSHER_DIAMETER = 66;
