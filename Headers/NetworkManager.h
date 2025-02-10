@@ -11,11 +11,10 @@ class NetworkManager {
 public:
     void Host();
     void Join(std::string address, int port);
-
+    void CommunicationLoop();
 
 private:
     sockaddr_in rival;
-
     Peer m_peer;
 };
 

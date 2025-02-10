@@ -197,21 +197,16 @@ void PacketHeader::Print() {
     std::cout << "  payload_size: " << payload_size << std::endl;
 }
 
+void PacketMove::WriteFromStructToBuffer(Buffer &buffer) {
+    WriteInt(buffer,vector_2d.x);
+    WriteInt(buffer,vector_2d.y);
 
-PacketHeader GetPacketHeader(
-    uint8_t packet_id,
-    uint16_t packet_sequence,
-    uint16_t checksum,
-    uint16_t timestamp,
-    uint32_t ack_bitfield,
-    uint16_t payload_size)
-{
-    PacketHeader header;
-    header.packet_id = packet_id;
-    header.packet_sequence = packet_sequence;
-    header.checksum = checksum;
-    header.timestamp = timestamp;
-    header.ack_bitfield = ack_bitfield;
-    header.payload_size = payload_size;
-    return header;
 }
+
+void PacketMove::ReadFromBufferToStruct(Buffer &buffer) {
+    ReadInt(buffer,vector_2d.x);
+    ReadInt(buffer,vector_2d.y);
+
+}
+
+

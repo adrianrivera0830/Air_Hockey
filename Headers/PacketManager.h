@@ -14,7 +14,8 @@ enum class PacketID {
     ACK = 2,
     PING = 3,
     DISCONNECT = 4,
-    START = 5
+    START = 5,
+    MOVE = 6
 };
 
 
@@ -74,8 +75,17 @@ struct PacketStart {
     void WriteFromStructToBuffer();
     void ReadFromBufferToStruct();
 };
+struct vector2D {
+    int32_t x;
+    int32_t y;
+};
+struct PacketMove {
+    vector2D vector_2d;
 
 
+    void WriteFromStructToBuffer(Buffer &buffer);
+    void ReadFromBufferToStruct(Buffer &buffer);
+};
 
 
 #endif //PACKETMANAGER_H

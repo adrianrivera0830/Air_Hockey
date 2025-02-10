@@ -49,7 +49,7 @@ void NetworkManager::Host() {
 
     std::cout << "JUEGO INICIADO!\n";
 
-
+CommunicationLoop();
 
 }
 
@@ -93,4 +93,42 @@ void NetworkManager::Join(std::string address,int port) {
     std::cout << "JUEGO INICIADO!\n";
     rival = from;
 
+    CommunicationLoop();
+
+}
+
+void NetworkManager::CommunicationLoop() {
+    while (true) {
+        PacketHeader moveHeader;
+        moveHeader.packet_id = 6;
+        PacketMove packet_move;
+        packet_move.vector_2d.x = 10;
+        packet_move.vector_2d.y = 10;
+
+        moveHeader.payload_size = sizeof(packet_move);
+        Buffer send_buffer(1024);
+
+        moveHeader.WriteFromStructToBuffer(send_buffer);
+        packet_move.WriteFromStructToBuffer(send_buffer);
+
+        int bytes_sent = m_peer.SendTo((char *)send_buffer.m_buffer,send_buffer.m_size,(sockaddr *)&rival,sizeof(rival));
+        sockaddr from;
+        socklen_t fromLen = sizeof(from);
+        Buffer receive_buffer(1024);
+        int bytesReceived = m_peer.ReceiveFrom((char *)receive_buffer.m_buffer, receive_buffer.m_size, &from, &fromLen);
+
+        if (bytesReceived > 0) {
+            PacketHeader receiveHeader;
+            receiveHeader.ReadFromBufferToStruct(receive_buffer);
+            std::cout << receiveHeader.packet_id << std::endl;
+
+
+            if (receiveHeader.packet_id == 6) {
+                PacketMove receiveMOVE;
+                receiveMOVE.ReadFromBufferToStruct(receive_buffer);
+
+            }
+
+        }
+    }
 }

@@ -194,6 +194,8 @@ void ShowMenu() {
         std::cin >> port;
         network_manager.Join(ip,port);
     }
+
+
 }
 
 int main(int argc, char *argv[]) {
@@ -205,8 +207,8 @@ int main(int argc, char *argv[]) {
 
 
 
-    SDL_ShowCursor(SDL_DISABLE);
-    SDL_SetWindowGrab(window, SDL_TRUE);
+    //SDL_ShowCursor(SDL_DISABLE);
+    //SDL_SetWindowGrab(window, SDL_TRUE);
 
 
 
