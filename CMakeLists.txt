@@ -28,8 +28,6 @@ if (WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole")  # Para evitar error de WinMain
 
     add_executable(Air_Hockey Source/main.cpp
-            Source/LobbyManager.cpp
-            Headers/LobbyManager.h
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h
@@ -40,7 +38,9 @@ if (WIN32)
             Source/Disk.cpp
             Headers/Disk.h
             Source/Pusher.cpp
-            Headers/Pusher.h)
+            Headers/Pusher.h
+            Source/NetworkManager.cpp
+            Headers/NetworkManager.h)
 
     # Vincular bibliotecas necesarias
     target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf ws2_32)
@@ -56,8 +56,6 @@ elseif (UNIX)
     include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 
     add_executable(Air_Hockey Source/main.cpp
-            Source/LobbyManager.cpp
-            Headers/LobbyManager.h
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h
@@ -69,6 +67,8 @@ elseif (UNIX)
             Headers/Disk.h
             Source/Pusher.cpp
             Headers/Pusher.h
+            Source/NetworkManager.cpp
+            Headers/NetworkManager.h
     )
 
     target_link_libraries(Air_Hockey ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})

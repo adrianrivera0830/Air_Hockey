@@ -3,10 +3,10 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "../Headers/LobbyManager.h"
 #include "../Headers/TextureRenderer.h"
 #include "../Headers/Disk.h"
 #include "../Headers/Pusher.h"
+#include "../Headers/NetworkManager.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 1000
@@ -181,12 +181,18 @@ void ShowMenu() {
     std::cout << "Join(2)\n";
     int opcion;
     std::cin >> opcion;
-    LobbyManager lobby_manager;
 
+    NetworkManager network_manager;
     if (opcion == 1) {
-lobby_manager.Host();
-    } else {
-lobby_manager.Join();
+        network_manager.Host();
+    } else if (opcion == 2){
+        std::cout << "Ingresa ip: ";
+        std::string ip;
+        std::cin >> ip;
+        std::cout << "Ingresa port: ";
+        int port;
+        std::cin >> port;
+        network_manager.Join(ip,port);
     }
 }
 

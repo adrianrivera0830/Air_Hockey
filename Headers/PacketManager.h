@@ -54,12 +54,12 @@ void ReadInt(Buffer& buffer, int16_t& out);
 void ReadInt(Buffer& buffer, int8_t& out);
 
 struct PacketHeader {
-    uint16_t packet_id;
-    uint16_t packet_sequence;
-    uint16_t checksum;
-    uint16_t timestamp;
-    uint32_t ack_bitfield;
-    uint16_t payload_size;
+    uint16_t packet_id = 0;
+    uint16_t packet_sequence = 0;
+    uint16_t checksum = 0;
+    uint16_t timestamp = 0;
+    uint32_t ack_bitfield = 0;
+    uint16_t payload_size = 0;
 
     void WriteFromStructToBuffer(Buffer &buffer);
     void ReadFromBufferToStruct(Buffer &buffer);
@@ -67,13 +67,7 @@ struct PacketHeader {
     void Print();
 };
 
-PacketHeader GetPacketHeader(
-    uint8_t packet_id,
-    uint16_t packet_sequence,
-    uint16_t checksum,
-    uint16_t timestamp,
-    uint32_t ack_bitfield,
-    uint16_t payload_size);
+
 
 
 struct PacketStart {
