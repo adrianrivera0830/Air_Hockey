@@ -16,7 +16,7 @@ public:
 
 #define VELOCITY_MULTIPLIER 0.05;
 
-    void UpdatePusherPosition(float deltaTime);
+    void UpdatePusherPosition(float deltaTime, int newX, int newY);
 
     void RenderPusher();
 

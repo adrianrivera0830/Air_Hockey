@@ -15,13 +15,13 @@ void Pusher::LerpVector(float x1, float y1, float x2, float y2, float alpha, int
     outY = (1.0f - alpha) * y1 + alpha * y2;
 }
 
-void Pusher::UpdatePusherPosition(float deltaTime) {
+void Pusher::UpdatePusherPosition(float deltaTime,int newX, int newY) {
     previusX = x;
     previusY = y;
 
-    SDL_GetMouseState(&x, &y);
 
-    LerpVector(previusX, previusY, x, y, .15f, x, y);
+
+    LerpVector(previusX, previusY, newX, newY, .15f, x, y);
 
 
     velX = ((x - previusX) / deltaTime) * VELOCITY_MULTIPLIER;

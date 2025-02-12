@@ -33,6 +33,7 @@ public:
 
 
     void CleanUp();
+    float GetDeltaTime();
     //SDL_ShowCursor(SDL_DISABLE);
     //SDL_SetWindowGrab(window, SDL_TRUE);
 
@@ -41,6 +42,8 @@ public:
 
     Disk *disk = nullptr;
     Pusher *pusher = nullptr;
+    Pusher *rival = nullptr;
+
 private:
 };
 
