@@ -1,7 +1,3 @@
-//
-// Created by Cuent on 2/9/2025.
-//
-
 #include "../Headers/NetworkManager.h"
 #include "../Headers/NetworkHeaders.h"
 #include "../Headers/PacketManager.h"

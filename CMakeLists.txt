@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
 project(Air_Hockey)
 
+# Configurar estándar de C++
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Detección del sistema operativo
 if (WIN32)
     message(STATUS "Compilando en Windows")
+
+    # Definir _WIN32_WINNT para compatibilidad con inet_pton
+    add_definitions(-D_WIN32_WINNT=0x0601)
+
+    # Incluir Winsock en el linker para evitar errores de funciones de red
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole -lws2_32")
 
     # Rutas de SDL2
     set(SDL2_INCLUDE_DIR "C:/SDL2/SDL2-devel-2.30.12-mingw/SDL2-2.30.12/x86_64-w64-mingw32/include/SDL2")
@@ -25,9 +33,9 @@ if (WIN32)
     # Incluir librerías
     link_directories(${SDL2_LIB_DIR} ${SDL2_IMAGE_LIB_DIR} ${SDL2_TTF_LIB_DIR})
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mconsole")  # Para evitar error de WinMain
-
-    add_executable(Air_Hockey Source/main.cpp
+    # Definir el ejecutable
+    add_executable(Air_Hockey
+            Source/main.cpp
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h
@@ -42,7 +50,8 @@ if (WIN32)
             Source/NetworkManager.cpp
             Headers/NetworkManager.h
             Source/Game.cpp
-            Headers/Game.h)
+            Headers/Game.h
+    )
 
     # Vincular bibliotecas necesarias
     target_link_libraries(Air_Hockey mingw32 SDL2main SDL2 SDL2_image SDL2_ttf ws2_32)
@@ -57,7 +66,8 @@ elseif (UNIX)
 
     include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 
-    add_executable(Air_Hockey Source/main.cpp
+    add_executable(Air_Hockey
+            Source/main.cpp
             Source/Peer.cpp
             Headers/Peer.h
             Headers/NetworkHeaders.h

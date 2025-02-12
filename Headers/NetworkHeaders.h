@@ -7,7 +7,7 @@
 // Detectar plataforma y definir configuraciones específicas
 #if defined(_WIN32)  // Windows
     #ifndef _WIN32_WINNT
-        #define _WIN32_WINNT 0x0600  // Windows Vista o superior
+        #define _WIN32_WINNT 0x0601  // Windows Vista o superior
     #endif
     #include <winsock2.h>
     #include <ws2tcpip.h>
