@@ -51,6 +51,7 @@ if (WIN32)
             Headers/NetworkManager.h
             Source/Game.cpp
             Headers/Game.h
+            Headers/Structs.h
     )
 
     # Vincular bibliotecas necesarias
@@ -83,6 +84,7 @@ elseif (UNIX)
             Headers/NetworkManager.h
             Source/Game.cpp
             Headers/Game.h
+            Headers/Structs.h
     )
 
     target_link_libraries(Air_Hockey ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})

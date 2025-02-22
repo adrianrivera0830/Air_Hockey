@@ -15,7 +15,9 @@ class TextureRenderer {
 public:
     TextureRenderer(SDL_Renderer *renderer, char *path);
 
-    void LoadTexture(char *path);
+    TextureRenderer(SDL_Renderer *renderer, std::string path);
+
+    void LoadTexture(const char *path);
 
     void SetPosition(int x, int y);
 

@@ -4,10 +4,11 @@
 
 #include "../Headers/Pusher.h"
 
-Pusher::Pusher(SDL_Renderer *m_renderer) {
-    pusher_texture = new TextureRenderer(m_renderer, "../images/handle.png");
-    pusher_texture->SetPosition(400, 600);
-    pusher_texture->SetSize(PUSHER_DIAMETER, PUSHER_DIAMETER);
+
+Pusher::Pusher(SDL_Renderer *m_renderer, int diameter, int velocityMultiplier) :  velMult(velocityMultiplier){
+    const char *path = "../images/handle.png";
+    pusher_texture = new TextureRenderer(m_renderer, path);
+    pusher_texture->SetSize(diameter, diameter);
 }
 
 void Pusher::LerpVector(float x1, float y1, float x2, float y2, float alpha, int &outX, int &outY) {
@@ -15,22 +16,19 @@ void Pusher::LerpVector(float x1, float y1, float x2, float y2, float alpha, int
     outY = (1.0f - alpha) * y1 + alpha * y2;
 }
 
-void Pusher::UpdatePusherPosition(float deltaTime,int newX, int newY) {
-    previusX = x;
-    previusY = y;
+void Pusher::SetPusherPosition(float deltaTime,int x, int y) {
+    previousPos.x = x;
+    previousPos.y = y;
 
+    LerpVector(previousPos.x, previousPos.y, x, y, .15f, currentPos.x, currentPos.y);
 
-
-    LerpVector(previusX, previusY, newX, newY, .15f, x, y);
-
-
-    velX = ((x - previusX) / deltaTime) * VELOCITY_MULTIPLIER;
-    velY = ((y - previusY) / deltaTime) * VELOCITY_MULTIPLIER;
-
+    if (deltaTime != 0) {
+        velocity.x = ((currentPos.x - previousPos.x) / deltaTime) * velMult;
+        velocity.y = ((currentPos.y - previousPos.y) / deltaTime) * velMult;
+    }
 
     //y = std::max(SCREEN_HEIGHT / 2, y);
-    pusher_texture->SetPosition(x, y);
-    RenderPusher();
+    pusher_texture->SetPosition(currentPos.x,currentPos.y);
 }
 
 void Pusher::RenderPusher() {
@@ -41,16 +39,12 @@ TextureRenderer * Pusher::GetTexture() {
     return pusher_texture;
 }
 
-float Pusher::GetVelX() { return velX; }
-
-float Pusher::GetVelY() { return velY; }
-
-int Pusher::GetDiameter() { return PUSHER_DIAMETER; }
-
-int Pusher::GetX() {
-    return  x;
+Velocity Pusher::GetVelocity() {
+    return velocity;
 }
 
-int Pusher::GetY() {
-    return  y;
+
+SDL_Rect Pusher::GetRect() {
+    return pusher_texture->GetRect();
 }
+

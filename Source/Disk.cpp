@@ -5,7 +5,8 @@
 #include "../Headers/Disk.h"
 
 Disk::Disk(SDL_Renderer *m_renderer) {
-    diskTexture = new TextureRenderer(m_renderer, "../images/ball.png");
+    const char* path = "../images/ball.png";
+    diskTexture = new TextureRenderer(m_renderer, path);
     diskTexture->SetPosition(400, 400);
     diskTexture->SetSize(DISK_DIAMETER, DISK_DIAMETER);
 }
@@ -25,7 +26,7 @@ void Disk::UpdateVelocity() {
 void Disk::UpdatePosition(float deltaTime) {
     x += (velX * deltaTime);
     y += (velY * deltaTime);
-    OnDiskEdgeCollission();
+    OnDiskEdgeCollision();
     diskTexture->SetPosition(x, y);
 }
 
@@ -38,7 +39,7 @@ void Disk::ApplyImpulse(float pusherVelX, float pusherVelY) {
     velY += pusherVelY;
 }
 
-void Disk::OnDiskEdgeCollission() {
+void Disk::OnDiskEdgeCollision() {
     // int margin = EDGE_MARGIN;
     // int fullX = x + DISK_DIAMETER;
     // int fullY = y + DISK_DIAMETER;

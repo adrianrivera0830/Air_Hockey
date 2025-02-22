@@ -106,15 +106,15 @@ return deltaTime;
 
 void Game::GameLoop() {
 
-    disk = new Disk(renderer);
-    pusher = new Pusher(renderer);
-    rival = new Pusher(renderer);
-    rival->UpdatePusherPosition(deltaTime,400,400);
-
-    TextureRenderer *bg = new TextureRenderer(renderer, "../images/map.png");
-    bg->SetPosition(0, 0);
-    bg->SetSize(SCREEN_WIDTH,SCREEN_HEIGHT);
-    int handlePosX, handlePosY;
+    // disk = new Disk(renderer);
+    // pusher = new Pusher(renderer);
+    // rival = new Pusher(renderer);
+    // rival->UpdatePusherPosition(deltaTime,400,400);
+    //
+    // TextureRenderer *bg = new TextureRenderer(renderer, "../images/map.png");
+    // bg->SetPosition(0, 0);
+    // bg->SetSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+    // int handlePosX, handlePosY;
 
     Uint32 lastTime = SDL_GetTicks(); // Tiempo del último frame
 
@@ -130,40 +130,37 @@ void Game::GameLoop() {
             if (event.type == SDL_QUIT) {
                 running = false;
             }
-
-            if (event.type == SDL_KEYDOWN) {
-            }
         }
-        int x;
-        int y;
-        SDL_GetMouseState(&x,&y);
-        pusher->UpdatePusherPosition(deltaTime, x, y);
-        disk->UpdateVelocity(); // Aplica la fricción a la velocidad
-        disk->UpdatePosition(deltaTime); // Actualiza la posición con la velocidad
+        // int x;
+        // int y;
+        // SDL_GetMouseState(&x,&y);
+        // pusher->UpdatePusherPosition(deltaTime, x, y);
+        // disk->UpdateVelocity(); // Aplica la fricción a la velocidad
+        // disk->UpdatePosition(deltaTime); // Actualiza la posición con la velocidad
+        //
+        // SDL_Rect pusherRect = pusher->GetTexture()->GetRect();
+        // SDL_Rect rivalRect = rival->GetTexture()->GetRect();
+        //
+        // SDL_Rect diskRect = disk->GetTexture()->GetRect();
+        // bool collisionPlayer = DetectCollision(pusherRect, diskRect);
+        // bool collisionRival = DetectCollision(rivalRect, diskRect);
 
-        SDL_Rect pusherRect = pusher->GetTexture()->GetRect();
-        SDL_Rect rivalRect = rival->GetTexture()->GetRect();
-
-        SDL_Rect diskRect = disk->GetTexture()->GetRect();
-        bool collisionPlayer = DetectCollision(pusherRect, diskRect);
-        bool collisionRival = DetectCollision(rivalRect, diskRect);
-
-        if (collisionPlayer) {
-            disk->OnDiskMalletCollision(IncidenceAngle(diskRect, pusherRect), pusher->GetDiameter() / 2);
-            disk->HitDisk(IncidenceAngle(diskRect, pusherRect));
-            disk->ApplyImpulse(pusher->GetVelX(), pusher->GetVelY());
-        }
-        if (collisionRival) {
-            disk->OnDiskMalletCollision(IncidenceAngle(diskRect, rivalRect), pusher->GetDiameter() / 2);
-            disk->HitDisk(IncidenceAngle(diskRect, rivalRect));
-            disk->ApplyImpulse(rival->GetVelX(), rival->GetVelY());
-        }
+        // if (collisionPlayer) {
+        //     disk->OnDiskMalletCollision(IncidenceAngle(diskRect, pusherRect), pusher->GetDiameter() / 2);
+        //     disk->HitDisk(IncidenceAngle(diskRect, pusherRect));
+        //     disk->ApplyImpulse(pusher->GetVelX(), pusher->GetVelY());
+        // }
+        // if (collisionRival) {
+        //     disk->OnDiskMalletCollision(IncidenceAngle(diskRect, rivalRect), pusher->GetDiameter() / 2);
+        //     disk->HitDisk(IncidenceAngle(diskRect, rivalRect));
+        //     disk->ApplyImpulse(rival->GetVelX(), rival->GetVelY());
+        // }
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
-        bg->RenderTexture();
-        disk->RenderDisk();
-        pusher->RenderPusher();
-        rival->RenderPusher();
+        // bg->RenderTexture();
+        // disk->RenderDisk();
+        // pusher->RenderPusher();
+        // rival->RenderPusher();
         SDL_RenderPresent(renderer);
 
         Uint32 frameTime = SDL_GetTicks() - currentTime;

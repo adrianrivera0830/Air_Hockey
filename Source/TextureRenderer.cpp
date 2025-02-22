@@ -4,11 +4,11 @@
 
 #include "../Headers/TextureRenderer.h"
 
-TextureRenderer::TextureRenderer(SDL_Renderer *renderer, char *path): m_renderer(renderer) {
-    LoadTexture(path);
+TextureRenderer::TextureRenderer(SDL_Renderer *renderer, std::string path): m_renderer(renderer) {
+    LoadTexture(path.c_str());
 }
 
-void TextureRenderer::LoadTexture(char *path) {
+void TextureRenderer::LoadTexture(const char *path) {
     SDL_Surface *surface = IMG_Load(path);
     if (!surface) {
         std::cerr << "Error cargando la imagen: " << path << " - " << IMG_GetError() << "\n";

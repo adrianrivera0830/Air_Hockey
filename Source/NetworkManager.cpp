@@ -45,16 +45,16 @@ void NetworkManager::Host() {
 
     std::cout << "JUEGO INICIADO!\n";
 
-    game = new Game();
-    std::thread newThread([this]() {
-    this->CommunicationLoop();
-});
-newThread.detach();
-    game->Initialize();
-
-    game->GameLoop();
-
-
+//     game = new Game();
+//     std::thread newThread([this]() {
+//     this->CommunicationLoop();
+// });
+// newThread.detach();
+//     game->Initialize();
+//
+//     game->GameLoop();
+//
+//
 
 }
 
@@ -97,66 +97,66 @@ void NetworkManager::Join(std::string address,int port) {
 
     std::cout << "JUEGO INICIADO!\n";
     rival = from;
-
-    game = new Game();
-    std::thread newThread([this]() {
-    this->CommunicationLoop();
-});
-    newThread.detach();
-    game->Initialize();
-
-    game->GameLoop();
+//
+//     game = new Game();
+//     std::thread newThread([this]() {
+//     this->CommunicationLoop();
+// });
+//     newThread.detach();
+//     game->Initialize();
+//
+//     game->GameLoop();
 
 }
 
 void NetworkManager::CommunicationLoop() {
 
-    while (true) {
-        PacketHeader moveHeader;
-        moveHeader.packet_id = 6;
-        PacketMove packet_move;
-        if (game != nullptr) {
-            if (game->pusher != nullptr) {
-
-                packet_move.vector_2d.x = game->pusher->GetX();
-
-                packet_move.vector_2d.y =  game->pusher->GetY();
-            }
-        }
-
-
-        moveHeader.payload_size = sizeof(packet_move);
-        Buffer send_buffer(1024);
-
-        moveHeader.WriteFromStructToBuffer(send_buffer);
-        packet_move.WriteFromStructToBuffer(send_buffer);
-
-        int bytes_sent = m_peer.SendTo((char *)send_buffer.m_buffer,send_buffer.m_size,(sockaddr *)&rival,sizeof(rival));
-        sockaddr from;
-        socklen_t fromLen = sizeof(from);
-        Buffer receive_buffer(1024);
-        int bytesReceived = m_peer.ReceiveFrom((char *)receive_buffer.m_buffer, receive_buffer.m_size, &from, &fromLen);
-
-        if (bytesReceived > 0) {
-            PacketHeader receiveHeader;
-            receiveHeader.ReadFromBufferToStruct(receive_buffer);
-
-
-            if (receiveHeader.packet_id == 6) {
-                PacketMove receiveMOVE;
-                receiveMOVE.ReadFromBufferToStruct(receive_buffer);
-                if (game != nullptr) {
-                    if (game->rival != nullptr) {
-                        game->rival->UpdatePusherPosition(game->GetDeltaTime(),receiveMOVE.vector_2d.x,receiveMOVE.vector_2d.y);
-
-                    }
-                }
-
-            }
-
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));  // ~60 FPS
-    }
+    // while (true) {
+    //     PacketHeader moveHeader;
+    //     moveHeader.packet_id = 6;
+    //     PacketMove packet_move;
+    //     if (game != nullptr) {
+    //         if (game->pusher != nullptr) {
+    //
+    //             packet_move.vector_2d.x = game->pusher->GetX();
+    //
+    //             packet_move.vector_2d.y =  game->pusher->GetY();
+    //         }
+    //     }
+    //
+    //
+    //     moveHeader.payload_size = sizeof(packet_move);
+    //     Buffer send_buffer(1024);
+    //
+    //     moveHeader.WriteFromStructToBuffer(send_buffer);
+    //     packet_move.WriteFromStructToBuffer(send_buffer);
+    //
+    //     int bytes_sent = m_peer.SendTo((char *)send_buffer.m_buffer,send_buffer.m_size,(sockaddr *)&rival,sizeof(rival));
+    //     sockaddr from;
+    //     socklen_t fromLen = sizeof(from);
+    //     Buffer receive_buffer(1024);
+    //     int bytesReceived = m_peer.ReceiveFrom((char *)receive_buffer.m_buffer, receive_buffer.m_size, &from, &fromLen);
+    //
+    //     if (bytesReceived > 0) {
+    //         PacketHeader receiveHeader;
+    //         receiveHeader.ReadFromBufferToStruct(receive_buffer);
+    //
+    //
+    //         if (receiveHeader.packet_id == 6) {
+    //             PacketMove receiveMOVE;
+    //             receiveMOVE.ReadFromBufferToStruct(receive_buffer);
+    //             if (game != nullptr) {
+    //                 if (game->rival != nullptr) {
+    //                     game->rival->UpdatePusherPosition(game->GetDeltaTime(),receiveMOVE.vector_2d.x,receiveMOVE.vector_2d.y);
+    //
+    //                 }
+    //             }
+    //
+    //         }
+    //
+    //     }
+    //     std::this_thread::sleep_for(std::chrono::milliseconds(16));  // ~60 FPS
+    // }
 
 
 

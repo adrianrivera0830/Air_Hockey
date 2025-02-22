@@ -21,20 +21,20 @@ public:
 
     void ApplyImpulse(float pusherVelX, float pusherVelY);
 
-    void OnDiskEdgeCollission();
+    void OnDiskEdgeCollision();
 
-#define RADIUS_OFFSET -30
+// #define RADIUS_OFFSET -30
 
     void OnDiskMalletCollision(float radians, int radius);
 
-
-    TextureRenderer *GetTexture() {
-        return diskTexture;
-    }
+    //
+    // TextureRenderer *GetTexture() {
+    //     return diskTexture;
+    // }
 
 private:
     TextureRenderer *diskTexture;
-
+    const int RADIUS_OFFSET = 32;
     float friction = 0.003f;
     const int DISK_DIAMETER = 36;
     float x = 400;
